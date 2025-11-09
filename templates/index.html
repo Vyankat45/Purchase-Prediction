@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Prediction</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #2b5876, #4e4376);
+            font-family: 'Poppins', sans-serif;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            width: 400px;
+            color: white;
+        }
+        h3 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #00e6e6;
+            font-weight: 600;
+        }
+        label {
+            font-weight: 500;
+        }
+        .form-control, .form-select {
+            background-color: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+        }
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        .form-select {
+            color: white;
+        }
+        input[type=range] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #00e6e6, #007bff);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+        .btn-custom {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            border: none;
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-custom:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+        }
+        .salary-value {
+            font-weight: 600;
+            color: #00e6e6;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h3>💡 Purchase Prediction</h3>
+        <form action="/predict" method="post">
+            <div class="mb-3">
+                <label>Gender</label>
+                <select name="gender" class="form-select" required>
+                    <option value="Male" color="black">Male</option>
+                    <option value="Female" color="black">Female</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label>Age</label>
+                <input type="number" name="age" class="form-control" placeholder="Enter Age" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Salary</label>
+                <input type="range" id="salaryRange" name="salary" min="10000" max="100000" step="1000" value="30000" oninput="updateSalary(this.value)">
+                <div class="salary-value" id="salaryValue">₹30,000</div>
+            </div>
+
+            <button type="submit" class="btn-custom">Predict</button>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="predictionModal" tabindex="-1" aria-labelledby="predictionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:15px;">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="predictionModalLabel">Prediction Result</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center fs-5">
+                    {{ prediction_text }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateSalary(value) {
+            document.getElementById("salaryValue").innerText = "₹" + Number(value).toLocaleString();
+        }
+
+        // Auto show modal if there's a prediction
+        {% if prediction_text %}
+        const myModal = new bootstrap.Modal(document.getElementById('predictionModal'));
+        myModal.show();
+        {% endif %}
+    </script>
+</body>
+</html>
